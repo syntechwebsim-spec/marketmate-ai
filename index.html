@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="theme-color" content="#123d2b" />
+    <meta name="description" content="MarketMate AI by SynTech turns one product photo into a ready-to-use sales kit for small businesses. Sponsored by Bincom Hackathon." />
+    <meta name="author" content="SynTech" />
+    <title>MarketMate AI𝓫𝔂ˢʸⁿᵗᵉᶜʰ — From product to customer</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23123d2b'/><path d='M6 8v18h20' fill='none' stroke='%23d9f36e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><path d='M11 22l5-5 4 4 7-9' fill='none' stroke='%23d9f36e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+:root {
+  --bg: #f7f8f4;
+  --ink: #18251d;
+  --green: #123d2b;
+  --green-hover: #1f5a3e;
+  --lime: #79991e;
+  --lime-bright: #d9f36e;
+  --lime-green: #91bd2e;
+  --border: #dce7da;
+  --border-strong: #cbd9c8;
+  --muted: #5a6d60;
+  --muted-2: #607a67;
+  --muted-3: #687b6c;
+  --muted-4: #819184;
+  --muted-5: #93a295;
+  --muted-6: #a1afa4;
+  --pill-bg: #eaf3da;
+  --pill-ink: #49630e;
+  --on-dark: #b8cdbb;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+img { max-width: 100%; display: block; }
+
+.script { font-family: "Segoe UI", "Apple Symbols", serif; font-weight: 400; }
+
+/* ---------- Load splash ---------- */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background: radial-gradient(120% 120% at 50% 0%, #17312a 0%, #0d241d 55%, #081b15 100%);
+}
+.splash--done { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .4s ease; }
+.splash__logo { display: flex; align-items: center; gap: 14px; }
+.splash__mark {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, #1f5a3e, #123d2b);
+  color: var(--lime-bright);
+  box-shadow: 0 0 40px rgba(217, 243, 110, .25), 0 12px 30px rgba(0,0,0,.4);
+}
+.splash__mark svg { width: 28px; height: 28px; }
+.splash__name {
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  color: #fff;
+}
+.splash__accent { color: var(--lime); }
+.splash__script { color: #b8cdbb; font-size: 1.2rem; letter-spacing: 0; margin-left: 3px; }
+.splash__ring { position: relative; width: 72px; height: 72px; }
+.splash__ring span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: none;
+  animation: spin 1.1s linear infinite;
+}
+.splash__ring span:nth-child(1) { border-top-color: var(--lime-bright); }
+.splash__ring span:nth-child(2) { inset: 10px; border-top-color: var(--lime); animation-duration: 1.5s; animation-direction: reverse; }
+.splash__ring span:nth-child(3) { inset: 20px; border-top-color: #fff; animation-duration: 1.9s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.splash__bar {
+  width: 200px;
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden;
+}
+.splash__bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--lime), var(--lime-bright));
+  animation: loadbar 1.15s ease-in-out forwards;
+}
+@keyframes loadbar { 0% { width: 0; } 100% { width: 100%; } }
+.splash__tag {
+  font-size: .72rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(217, 243, 110, .7);
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+  background: rgba(247,248,244,.9);
+  backdrop-filter: blur(10px);
+}
+.site-header__inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+}
+@media (min-width: 1024px) { .site-header__inner { padding: 1.25rem 2.5rem; } }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 1rem;
+  background: var(--green);
+  color: var(--lime-bright);
+  box-shadow: 0 8px 20px rgba(18,61,43,.16);
+}
+.brand__mark svg { width: 20px; height: 20px; }
+.brand__name {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -.04em;
+}
+.brand__accent { color: var(--lime); }
+.brand__script { color: #4a5a51; font-size: .95rem; letter-spacing: 0; margin-left: 2px; }
+
+.site-nav { display: flex; align-items: center; gap: 2rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
+.site-nav a { transition: color .2s; }
+.site-nav a:hover { color: var(--green); }
+.site-nav__demo {
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  padding: .5rem 1rem;
+  color: var(--green);
+  font-size: .875rem;
+  font-weight: 600;
+  transition: background .2s;
+}
+.site-nav__demo:hover { background: #fff; }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--border); isolation: isolate; }
+.hero__glow { position: absolute; border-radius: 9999px; z-index: -1; filter: blur(70px); }
+.hero__glow--lime { width: 34rem; height: 34rem; right: -8rem; top: -11rem; background: rgba(217,243,110,.4); }
+.hero__glow--teal { width: 28rem; height: 28rem; left: -10rem; bottom: -12rem; background: rgba(207,231,220,.85); }
+.hero__inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 3rem;
+  padding: 4rem 1.5rem;
+}
+@media (min-width: 1024px) {
+  .hero__inner { grid-template-columns: 1.03fr .97fr; padding: 6rem 2.5rem; }
+}
+.hero__copy { max-width: 40rem; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.7);
+  border-radius: 999px;
+  padding: .4rem .8rem;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.badge__icon { width: 14px; height: 14px; color: var(--lime); }
+.hero__title {
+  margin: 1.4rem 0 0;
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  font-weight: 900;
+  line-height: .98;
+  letter-spacing: -.07em;
+  color: var(--green);
+}
+.hero__accent { color: var(--lime); }
+.hero__lead {
+  margin-top: 1.75rem;
+  max-width: 36rem;
+  font-size: 1.125rem;
+  line-height: 2rem;
+  color: var(--muted);
+}
+.hero__cta { margin-top: 2.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.btn { display: inline-flex; align-items: center; gap: .6rem; border: none; font-weight: 700; }
+.btn svg { width: 16px; height: 16px; }
+.btn--primary {
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  padding: .9rem 1.5rem;
+  font-size: .875rem;
+  box-shadow: 0 12px 24px rgba(18,61,43,.2);
+  transition: transform .2s, background .2s;
+}
+.btn--primary:hover { transform: translateY(-2px); background: var(--green-hover); }
+.btn--ghost {
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-2);
+  font-size: .875rem;
+  padding: .75rem 1rem;
+  transition: box-shadow .2s;
+}
+.btn--ghost:hover { background: #fff; }
+.btn--ghost svg { color: var(--lime); }
+.hero__points { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; font-size: .875rem; font-weight: 600; color: var(--muted-2); }
+.hero__points span { display: inline-flex; align-items: center; gap: .5rem; }
+.hero__points svg { width: 16px; height: 16px; color: var(--lime); }
+
+.hero__visual { position: relative; margin: 0 auto; width: 100%; max-width: 520px; }
+.hero__ready-chip {
+  position: absolute;
+  right: -0.4rem;
+  top: 2.5rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid rgba(255,255,255,.7);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: .75rem;
+  box-shadow: 0 16px 36px rgba(0,0,0,.12);
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--muted-2);
+}
+@media (min-width: 640px) { .hero__ready-chip { right: -2rem; } }
+.hero__ready-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--lime-green); }
+.demo-card {
+  transform: rotate(2deg);
+  border-radius: 2rem;
+  background: var(--green);
+  padding: 12px;
+  box-shadow: 0 30px 80px rgba(18,61,43,.26);
+  transition: transform .4s;
+  cursor: default;
+}
+.demo-card:hover { transform: rotate(0); }
+.demo-card__body { border-radius: 1.5rem; background: var(--bg); padding: 1.25rem 1.5rem; }
+.demo-card__head { display: flex; align-items: center; justify-content: space-between; }
+.demo-card__brand { font-size: .7rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; color: var(--lime); }
+.demo-card__live { border-radius: 999px; background: var(--lime-bright); padding: .25rem .6rem; font-size: 10px; font-weight: 900; color: var(--green); }
+.demo-card__body { margin-top: 0; }
+.demo-card__photo {
+  min-height: 220px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #b8b69d, #806c4e 55%, #312b26);
+  box-shadow: inset 0 0 20px rgba(0,0,0,.15);
+}
+.demo-card__photo::after { content: "Product photo"; border-radius: .75rem; background: rgba(255,255,255,.9); padding: .5rem .75rem; font-size: .75rem; font-weight: 900; color: var(--green); }
+.demo-card__info { display: grid; grid-template-columns: .85fr 1.15fr; gap: 1rem; margin-top: 1.2rem; }
+.demo-card__item, .demo-card__price { border-radius: 1rem; padding: 1rem; box-shadow: 0 4px 14px rgba(0,0,0,.05); }
+.demo-card__item { background: #fff; }
+.demo-card__price { background: var(--lime-bright); }
+.demo-card__title { font-weight: 900; line-height: 1.15; color: var(--green); font-size: 1rem; }
+.demo-card__sub { font-size: .75rem; line-height: 1.4; color: var(--muted); }
+.demo-card__amount { margin-top: .25rem; font-size: .875rem; font-weight: 900; color: var(--green); }
+.mini-label { font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--lime); margin-bottom: .5rem; }
+.mini-label--dark { color: var(--pill-ink); }
+
+.hero__lang-chip {
+  position: absolute;
+  left: -0.4rem;
+  bottom: -1.25rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 1rem;
+  padding: .75rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.1);
+}
+.hero__lang-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: .75rem; background: var(--pill-bg); color: var(--lime); }
+.hero__lang-icon svg { width: 16px; height: 16px; }
+.hero__lang-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--lime); }
+.hero__lang-value { font-size: .75rem; font-weight: 700; color: var(--green); }
+
+/* ---------- Section ---------- */
+.section { padding: 4rem 1.5rem; }
+@media (min-width: 1024px) { .section { padding: 6rem 2.5rem; } }
+.section__inner { max-width: 80rem; margin: 0 auto; }
+.eyebrow { font-size: .7rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; color: var(--lime); margin: 0; }
+.eyebrow--lime { color: var(--lime-bright); }
+.section__title { margin: .75rem 0 0; font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 900; letter-spacing: -.05em; color: var(--green); line-height: 1.05; }
+.accent { color: var(--lime); }
+
+.steps { margin-top: 2.5rem; display: grid; gap: 1rem; }
+@media (min-width: 768px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+.step { border-radius: 1.5rem; border: 1px solid var(--border); background: #fff; padding: 1.75rem; }
+.step__num { font-size: 3rem; font-weight: 900; letter-spacing: -.08em; color: var(--lime-bright); }
+.step__title { margin: 2rem 0 0; font-size: 1.25rem; font-weight: 900; color: var(--green); }
+.step__text { margin: .75rem 0 0; line-height: 1.75; color: var(--muted-3); }
+
+/* ---------- Create ---------- */
+.create { background: var(--green); padding: 4rem 1.5rem; color: #fff; }
+@media (min-width: 1024px) { .create { padding: 6rem 2.5rem; } }
+.create__inner { max-width: 80rem; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 3rem; }
+@media (min-width: 1024px) { .create__inner { grid-template-columns: .75fr 1.25fr; } }
+.create__title { margin: 1rem 0 0; font-size: clamp(2.2rem, 5vw, 3rem); font-weight: 900; letter-spacing: -.06em; line-height: 1.05; }
+.create__text { margin: 1.25rem 0 0; max-width: 24rem; line-height: 1.75; color: var(--on-dark); }
+.create__demo-link {
+  margin-top: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: none;
+  border: none;
+  color: var(--lime-bright);
+  font-size: .875rem;
+  font-weight: 700;
+  transition: color .2s;
+}
+.create__demo-link:hover { color: #fff; }
+.create__demo-link svg { width: 16px; height: 16px; }
+
+.create__card { flex: 1; border-radius: 2rem; background: var(--bg); padding: 1.25rem; color: var(--ink); box-shadow: 0 30px 60px rgba(0,0,0,.35); }
+@media (min-width: 640px) { .create__card { padding: 2rem; } }
+.create__grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+@media (min-width: 640px) { .create__grid { grid-template-columns: 1fr 1fr; } }
+.field--full { grid-column: 1 / -1; }
+.field__label { display: block; margin-bottom: .5rem; font-size: .875rem; font-weight: 700; color: var(--green); }
+.field__optional { font-weight: 400; color: var(--muted-4); }
+.field__input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  background: #fff;
+  padding: 0 .75rem;
+  font-size: .875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  color: var(--ink);
+}
+.field__input::placeholder { color: var(--muted-6); }
+.field__input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(217,243,110,.5); }
+.field__select { appearance: none; }
+.select-wrap { position: relative; }
+.select-caret { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--lime); pointer-events: none; }
+
+.lang-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
+.lang-btn { position: relative; cursor: pointer; }
+.lang-btn input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.lang-btn span {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: #fff;
+  padding: .45rem .95rem;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--muted-2);
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+}
+.lang-btn:hover span { border-color: var(--lime); color: var(--green); }
+.lang-btn input:checked + span {
+  background: var(--lime-bright);
+  border-color: var(--lime-bright);
+  color: var(--green);
+  box-shadow: 0 4px 12px rgba(217,243,110,.4);
+}
+.lang-btn input:focus-visible + span { outline: 3px solid rgba(121,153,30,.4); outline-offset: 2px; }
+
+.dropzone {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 144px;
+  border: 2px dashed var(--border-strong);
+  border-radius: 1rem;
+  background: #fff;
+  transition: border-color .2s;
+}
+.dropzone:hover { border-color: var(--lime); }
+.dropzone--drag { border-color: var(--lime); background: var(--bg); }
+.dropzone__empty { text-align: center; padding: 1rem; }
+.dropzone__icon { width: 32px; height: 32px; margin: 0 auto; color: var(--lime); }
+.dropzone__title { margin-top: .5rem; font-size: .875rem; font-weight: 700; color: var(--muted-2); }
+.dropzone__hint { margin-top: .25rem; font-size: .75rem; color: var(--muted-5); }
+.dropzone__preview { position: relative; }
+.dropzone__preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 1rem; }
+.dropzone__preview::after {
+  content: attr(data-hint);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--green);
+  background: rgba(18,61,43,.4);
+}
+.dropzone__preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  display: grid;
+  place-items: center;
+}
+.dropzone--has-preview { border-style: solid; border-color: var(--border-strong); padding: 0; min-height: 144px; position: relative; overflow: hidden; }
+.dropzone__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: .75rem;
+  background: rgba(255,255,255,.9);
+  padding: .5rem .75rem;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--green);
+  white-space: nowrap;
+}
+.dropzone--has-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translate(-50%, 16px);
+  background: var(--green);
+  color: #fff;
+  padding: .7rem 1.2rem;
+  border-radius: 999px;
+  font-size: .875rem;
+  font-weight: 600;
+  box-shadow: 0 14px 30px rgba(18,61,43,.3);
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast--show { opacity: 1; transform: translate(-50%, 0); }
+
+.btn--generate {
+  margin-top: 1.25rem;
+  width: 100%;
+  height: 56px;
+  justify-content: center;
+  border-radius: 1rem;
+  background: var(--lime);
+  color: #10251a;
+  font-size: 1rem;
+  font-weight: 900;
+  transition: background .2s;
+}
+.btn--generate:hover { background: var(--lime-green); }
+.btn--generate .btn__label { display: inline-flex; align-items: center; gap: .6rem; }
+.btn--generate svg { width: 20px; height: 20px; }
+.btn--generate:disabled { opacity: .7; cursor: not-allowed; }
+.btn--generate .spinner { width: 20px; height: 20px; border-radius: 999px; border: 3px solid rgba(16,37,26,.3); border-top-color: #10251a; animation: spin .8s linear infinite; }
+.create__note { margin: .75rem 0 0; text-align: center; font-size: .75rem; color: var(--muted-4); }
+
+/* ---------- Sales kit ---------- */
+.kit { scroll-margin-top: 1rem; }
+.kit[hidden] { display: none; }
+.kit__top { display: flex; flex-direction: column; gap: 1.25rem; justify-content: space-between; }
+@media (min-width: 640px) { .kit__top { flex-direction: row; align-items: flex-end; } }
+.kit__restart {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: none;
+  border: none;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--muted-3);
+  transition: color .2s;
+}
+.kit__restart:hover { color: var(--green); }
+.kit__restart svg { width: 16px; height: 16px; }
+.kit__grid { margin-top: 2.5rem; display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 1024px) { .kit__grid { grid-template-columns: 1fr 1fr; } }
+.kitcard { border-radius: 1.5rem; border: 1px solid var(--border); background: #fff; padding: 1.5rem; box-shadow: 0 10px 30px rgba(24,37,29,.04); }
+.kitcard__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.kitcard__title { display: flex; align-items: center; gap: .5rem; font-size: .7rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--lime); }
+.kitcard__icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: .75rem; background: var(--pill-bg); }
+.kitcard__icon svg { width: 18px; height: 18px; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  border: none;
+  border-radius: 999px;
+  background: #f0f5ec;
+  padding: .4rem .8rem;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--muted-2);
+  transition: background .2s;
+}
+.copy-btn:hover { background: var(--pill-bg); }
+.copy-btn svg { width: 14px; height: 14px; }
+.kitcard h3 { margin: 0; font-size: 1.5rem; font-weight: 900; color: var(--green); }
+.kitcard p.lg { margin: 1rem 0 0; line-height: 1.75; color: var(--muted); }
+.kitcard p.sm { margin: 0; line-height: 1.75; color: var(--muted); white-space: pre-line; }
+.tags { margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.tag { border-radius: 999px; background: var(--pill-bg); padding: .4rem .8rem; font-size: .75rem; font-weight: 700; color: var(--pill-ink); }
+.kitcard__warn { margin-top: 1.25rem; border-radius: 1rem; background: #fff9db; padding: 1rem; font-size: .875rem; line-height: 1.5; color: #77691c; }
+.faq { margin-top: 0; }
+.faq-item { margin-bottom: 1.25rem; }
+.faq-item:last-child { margin-bottom: 0; }
+.faq-item p.q { margin: 0; font-weight: 900; color: var(--green); }
+.faq-item p.a { margin: .25rem 0 0; font-size: .875rem; line-height: 1.5; color: var(--muted-3); }
+.kit__ai-note {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  background: #eef5e9;
+  border-radius: 1rem;
+  padding: 1rem;
+  font-size: .875rem;
+  line-height: 1.5;
+  color: #5f765f;
+}
+.kit__ai-note svg { width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0; color: var(--lime); }
+
+/* ---------- Sponsor ---------- */
+.sponsor { display: flex; align-items: center; justify-content: center; gap: .75rem; padding: 1.25rem 1.5rem; background: linear-gradient(90deg, #12241d, #1a3427 40%, #12241d); }
+.sponsor__text { font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(184,205,187,.7); }
+.sponsor__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid rgba(217,243,110,.35);
+  background: rgba(217,243,110,.1);
+  border-radius: 999px;
+  padding: .45rem 1rem;
+  color: var(--lime-bright);
+  font-size: .875rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  transition: background .2s, transform .2s;
+}
+.sponsor__badge:hover { background: rgba(217,243,110,.22); transform: translateY(-2px); }
+.sponsor__badge svg { width: 16px; height: 16px; }
+
+/* ---------- Footer ---------- */
+.site-footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem 2rem; }
+.site-footer__inner { max-width: 80rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.75rem; align-items: center; text-align: center; }
+.site-footer__contact { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; width: 100%; }
+.site-footer__contact-heading { margin: 0; font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; color: var(--green); }
+.site-footer__contact-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; width: 100%; max-width: 46rem; }
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  flex: 1 1 200px;
+  max-width: 300px;
+  border-radius: 999px;
+  padding: .85rem 1.4rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+  transition: transform .2s, box-shadow .2s, filter .2s;
+}
+.contact-pill:hover { transform: translateY(-3px); box-shadow: 0 16px 30px rgba(0,0,0,.2); filter: brightness(1.05); }
+.contact-pill svg { width: 20px; height: 20px; flex-shrink: 0; }
+.contact-pill--telegram { background: #2aabee; }
+.contact-pill--gmail { background: #ea4335; }
+.contact-pill--facebook { background: #1877f2; }
+.contact-pill--whatsapp { background: #25d366; }
+.site-footer__brand { font-size: .875rem; font-weight: 800; color: var(--green); }
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: #fff;
+  padding: .6rem 1.1rem;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--green);
+  transition: background .2s, border-color .2s;
+}
+.download-btn:hover { background: var(--pill-bg); border-color: var(--lime); }
+.download-btn:disabled { opacity: .6; cursor: not-allowed; }
+.download-btn svg { width: 16px; height: 16px; color: var(--lime); }
+
+/* ---------- Chat widget ---------- */
+.chat { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; }
+.chat__toggle {
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green), #1f5a3e);
+  color: var(--lime-bright);
+  box-shadow: 0 14px 30px rgba(18,61,43,.35);
+  display: grid;
+  place-items: center;
+  transition: transform .2s;
+}
+.chat__toggle:hover { transform: scale(1.05); }
+.chat__toggle svg { width: 26px; height: 26px; }
+.chat__toggle-close { display: none; }
+.chat--open .chat__toggle-open { display: none; }
+.chat--open .chat__toggle-close { display: block; }
+.chat__panel {
+  width: min(360px, calc(100vw - 2.5rem));
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 30px 60px rgba(18,61,43,.22);
+  overflow: hidden;
+  margin-bottom: .75rem;
+  opacity: 0;
+  transform: translateY(14px) scale(.97);
+  pointer-events: none;
+  transform-origin: bottom right;
+  transition: opacity .25s, transform .25s;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+.chat--open .chat__panel { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.chat__head {
+  display: flex; align-items: center; gap: .75rem;
+  background: var(--green); color: #fff; padding: 1rem;
+}
+.chat__avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: rgba(217,243,110,.15); color: var(--lime-bright); }
+.chat__avatar svg { width: 22px; height: 22px; }
+.chat__head-name { font-size: .875rem; font-weight: 900; }
+.chat_dot { display: inline-block; width: 8px; height: 8px; border-radius: 999px; background: #7ce38b; margin-right: .4rem; }
+.chat__head-status { display: inline-flex; align-items: center; font-size: .75rem; color: rgba(255,255,255,.75); }
+.chat__logs { padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: .75rem; flex: 1; }
+.chat__msg { max-width: 85%; padding: .6rem .8rem; border-radius: 1rem; font-size: .875rem; line-height: 1.5; white-space: pre-wrap; }
+.chat__msg--bot { align-self: flex-start; background: #f0f5ec; color: var(--ink); border-bottom-left-radius: .35rem; }
+.chat__msg--user { align-self: flex-end; background: var(--green); color: #fff; border-bottom-right-radius: .35rem; }
+.chat__msg--typing { display: inline-flex; gap: 4px; align-items: center; }
+.chat__msg--typing span { width: 6px; height: 6px; border-radius: 999px; background: var(--muted-3); animation: blink 1.2s infinite; }
+.chat__msg--typing span:nth-child(2) { animation-delay: .2s; }
+.chat__msg--typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity: .25; } 40% { opacity: 1; } }
+.chat__form { display: flex; gap: .5rem; padding: .75rem; border-top: 1px solid var(--border); }
+.chat__input { flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: .6rem .9rem; font-size: .875rem; outline: none; font-family: inherit; }
+.chat__input:focus { border-color: var(--lime); }
+.chat__send { border: none; width: 38px; height: 38px; border-radius: 999px; background: var(--green); color: #fff; display: grid; place-items: center; transition: background .2s; }
+.chat__send:hover { background: var(--green-hover); }
+.chat__send svg { width: 16px; height: 16px; }
+</style>
+  </head>
+  <body>
+    <!-- Futuristic load splash -->
+    <div id="splash" class="splash" aria-hidden="true">
+      <div class="splash__logo">
+        <span class="splash__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+        </span>
+        <span class="splash__name">MarketMate <span class="splash__accent">AI</span><span class="splash__script">𝓫𝔂ˢʸⁿᵗᵉᶜʰ</span></span>
+      </div>
+      <div class="splash__ring">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="splash__bar"><span></span></div>
+      <div class="splash__tag">Preparing your sales workspace</div>
+    </div>
+
+    <!-- AI helper chat widget -->
+    <div id="chat" class="chat">
+      <button id="chat-toggle" class="chat__toggle" aria-label="Ask our AI helper">
+        <svg class="chat__toggle-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg class="chat__toggle-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="chat-panel" class="chat__panel">
+        <div class="chat__head">
+          <span class="chat__avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+          </span>
+          <div class="chat__head-text">
+            <div class="chat__head-name">MarketMate AI𝓫𝔂ˢʸⁿᵗᵉᶜʰ Helper</div>
+            <div class="chat__head-status"><span class="chat__dot"></span>Online — here to help</div>
+          </div>
+        </div>
+        <div id="chat-logs" class="chat__logs"></div>
+        <form id="chat-form" class="chat__form" autocomplete="off">
+          <input id="chat-input" class="chat__input" type="text" placeholder="Ask anything about the site…" aria-label="Ask the AI helper" />
+          <button class="chat__send" type="submit" aria-label="Send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a href="#top" class="brand">
+          <span class="brand__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+          </span>
+          <span class="brand__name">MarketMate <span class="brand__accent">AI</span><span class="brand__script">𝓫𝔂ˢʸⁿᵗᵉᶜʰ</span></span>
+        </a>
+        <nav class="site-nav">
+          <a href="#how-it-works">How it works</a>
+          <a href="#sales-kit">Sales kit</a>
+          <button class="site-nav__demo" id="nav-demo" type="button">Try demo</button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero__glow hero__glow--lime"></div>
+        <div class="hero__glow hero__glow--teal"></div>
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <div class="badge">
+              <svg class="badge__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10 5.5 20.5a2.1 2.1 0 0 1-3-3L13 8"/><path d="m9 15 3-3"/><path d="M15 8h6a2 2 0 0 0 0-4H11a2 2 0 0 1 0-4h7"/></svg>
+              Built for local businesses
+            </div>
+            <h1 class="hero__title">
+              From product
+              <br />
+              <span class="hero__accent">to customer</span>
+              <br />
+              in 60 seconds.
+            </h1>
+            <p class="hero__lead">MarketMate AI𝓫𝔂ˢʸⁿᵗᵉᶜʰ turns one product photo into the words, price guidance, and messages you need to sell with confidence.</p>
+            <div class="hero__cta">
+              <a href="#create" class="btn btn--primary">
+                Create your sales kit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <button class="btn btn--ghost" id="hero-demo" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 10 8 4-8 4z"/></svg>
+                See a live example
+              </button>
+            </div>
+            <div class="hero__points">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No design skills needed</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Built for WhatsApp-first selling</span>
+            </div>
+          </div>
+
+          <div class="hero__visual">
+            <div class="hero__ready-chip">
+              <span class="hero__ready-dot"></span> AI sales kit ready
+            </div>
+            <div class="demo-card">
+              <div class="demo-card__head">
+                <span class="demo-card__brand">MarketMate AI𝓫𝔂ˢʸⁿᵗᵉᶜʰ</span>
+                <span class="demo-card__live">LIVE DEMO</span>
+              </div>
+              <div class="demo-card__body">
+                <div class="demo-card__photo">Product photo</div>
+                <div class="demo-card__info">
+                  <div class="demo-card__item">
+                    <div class="mini-label">Product title</div>
+                    <div class="demo-card__title">Everyday Carry Leather Handbag</div>
+                  </div>
+                  <div class="demo-card__item">
+                    <div class="mini-label">WhatsApp message</div>
+                    <div class="demo-card__sub">New in: your next everyday favourite…</div>
+                  </div>
+                  <div class="demo-card__price">
+                    <div class="mini-label mini-label--dark">Price guidance</div>
+                    <div class="demo-card__amount">₦35,000 – ₦45,000</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hero__lang-chip">
+              <span class="hero__lang-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0-9.8-8"/><path d="M2 3c4.5 4.5 6 11 4 18M22 3c-4.5 4.5-6 11-4 18"/></svg>
+              </span>
+              <div>
+                <div class="hero__lang-label">Local language</div>
+                <div class="hero__lang-value">Pidgin • Yoruba • Hausa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="section" id="how-it-works">
+        <div class="section__inner">
+          <div class="section__head">
+            <p class="eyebrow">One simple workflow</p>
+            <h2 class="section__title">Good products deserve<br /><span class="accent">good words.</span></h2>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step__num">01</div>
+              <h3 class="step__title">Show us your product</h3>
+              <p class="step__text">Upload a photo and tell us where you sell, who you serve, and your price.</p>
+            </div>
+            <div class="step">
+              <div class="step__num">02</div>
+              <h3 class="step__title">Let AI do the heavy lifting</h3>
+              <p class="step__text">Our generative AI understands the context and creates a complete sales kit.</p>
+            </div>
+            <div class="step">
+              <div class="step__num">03</div>
+              <h3 class="step__title">Copy. Share. Sell.</h3>
+              <p class="step__text">Take the right message to WhatsApp, Instagram, or your next customer conversation.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Create form -->
+      <section class="create" id="create">
+        <div class="create__inner">
+          <div class="create__intro">
+            <p class="eyebrow eyebrow--lime">Create your kit</p>
+            <h2 class="create__title">Give your product<br />a better pitch.</h2>
+            <p class="create__text">The more context you add, the more useful your sales kit becomes. You can start with just a photo.</p>
+            <button class="create__demo-link" id="create-demo" type="button">
+              Need inspiration? Load the demo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <form class="create__card" id="createForm">
+            <div class="create__grid">
+              <div class="field field--full">
+                <label class="field__label" for="photo">Product photo <span class="field__optional">(recommended)</span></label>
+                <input type="file" id="photo" accept="image/*" class="field__file" hidden />
+                <div class="dropzone" id="dropzone" role="button" tabindex="0">
+                  <div class="dropzone__empty">
+                    <svg class="dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                    <p class="dropzone__title">Drop a photo here or click to browse</p>
+                    <p class="dropzone__hint">JPG or PNG • resized securely in your browser</p>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field__label" for="name">Product name</label>
+                <input class="field__input" id="name" type="text" placeholder="e.g. handmade leather handbag" value="handmade leather handbag" data-default="handmade leather handbag" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="location">Seller location</label>
+                <input class="field__input" id="location" type="text" placeholder="Lagos, Nigeria" value="Lagos, Nigeria" data-default="Lagos, Nigeria" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="customer">Target customer</label>
+                <input class="field__input" id="customer" type="text" placeholder="Young working women" value="Young working women" data-default="Young working women" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="cost">Cost or desired price</label>
+                <input class="field__input" id="cost" type="text" inputmode="numeric" placeholder="₦35,000" value="₦35,000" data-default="₦35,000" />
+              </div>
+              <div class="field field--full">
+                <label class="field__label" for="language">Local-language copy</label>
+                <div class="lang-buttons" id="lang-buttons" role="group" aria-label="Local-language copy">
+                  <label class="lang-btn"><input type="radio" name="language" value="Simple English" checked /><span>Simple English</span></label>
+                  <label class="lang-btn"><input type="radio" name="language" value="Nigerian Pidgin" /><span>Nigerian Pidgin</span></label>
+                  <label class="lang-btn"><input type="radio" name="language" value="Yoruba" /><span>Yoruba</span></label>
+                  <label class="lang-btn"><input type="radio" name="language" value="Hausa" /><span>Hausa</span></label>
+                  <label class="lang-btn"><input type="radio" name="language" value="Igbo" /><span>Igbo</span></label>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn--generate" id="generate" type="submit">
+              <span class="btn__label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10 5.5 20.5a2.1 2.1 0 0 1-3-3L13 8"/><path d="m9 15 3-3"/><path d="M15 8h6a2 2 0 0 0 0-4H11a2 2 0 0 1 0-4h7"/></svg>
+                ✨ Generate my sales kit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </button>
+            <p class="create__note">Your product photo is used only to create this response.</p>
+          </form>
+        </div>
+      </section>
+
+      <!-- Sales kit result -->
+      <section class="section kit" id="sales-kit" hidden>
+        <div class="section__inner">
+          <div class="kit__top">
+            <div>
+              <p class="eyebrow">Your AI-generated sales kit</p>
+              <h2 class="section__title">Ready to sound like<br /><span class="accent">your best salesperson.</span></h2>
+            </div>
+            <button class="kit__restart" id="restart" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.7 9.7 0 0 0-6.7 2.8L3 8"/><path d="M3 3v5h5"/></svg>
+              Start over
+            </button>
+          </div>
+          <div class="kit__grid" id="kit-grid"></div>
+          <div class="kit__ai-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z"/></svg>
+            <span id="kit-note">AI generated this kit from the product image and the seller's context. Verify price, materials, stock, and delivery details before publishing.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sponsorship -->
+    <div class="sponsor">
+      <span class="sponsor__text">Sponsored by</span>
+      <a class="sponsor__badge" href="#" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a7 7 0 0 1 0-14M12 15a7 7 0 0 0 0-14"/><path d="M12 22a5 5 0 0 0 5-5 3.5 3.5 0 0 0 0-7 3.5 3.5 0 0 0 0 7 5 5 0 0 0-5-5"/></svg>
+        Bincom Hackathon
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="site-footer__contact">
+          <h3 class="site-footer__contact-heading">Contact Us</h3>
+          <div class="site-footer__contact-pills">
+            <a class="contact-pill contact-pill--telegram" href="https://t.me/MakMateAI_bot" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.1 18.7 20c-.2.9-.8 1.2-1.5.7l-4.2-3.1-2 1.9c-.2.2-.4.4-.9.4l.3-4.6L18.4 6c.3-.3-.1-.4-.5-.2l-10 6.3-4.3-1.3c-.9-.3-.9-.9.2-1.3L20.6 3c.8-.3 1.4.2 1.3 1.1z"/></svg>
+              <span class="contact-pill__text">Chat on Telegram</span>
+            </a>
+            <a class="contact-pill contact-pill--gmail" href="mailto:syntech.websim@gmail.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="contact-pill__text">syntech.websim@gmail.com</span>
+            </a>
+            <a class="contact-pill contact-pill--facebook" href="https://www.facebook.com/profile.php?id=61594581688056" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 8H6v4h3v12h5V12h3.6l.6-4H14V6.7c0-1 .2-1.7 1.6-1.7H18V1.2C17.7 1.1 16.7 1 15.5 1 12.9 1 11 2.6 11 5.6V8z"/></svg>
+              <span class="contact-pill__text">Facebook Page</span>
+            </a>
+            <a class="contact-pill contact-pill--whatsapp" href="https://wa.me/2349131161153" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.8 2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.4 4.9 5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.4 0-2.7-.4-3.8-1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+              <span class="contact-pill__text">Chat on WhatsApp</span>
+            </a>
+          </div>
+        </div>
+        <span class="site-footer__brand">MarketMate <span class="accent">AI</span><span class="script">𝓫𝔂ˢʸⁿᵗᵉᶜʰ</span> - Built by SynTech to help African small businesses</span>
+        <button class="download-btn" id="download-code" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Download the full code as index.html
+        </button>
+      </div>
+    </footer>
+
+    <script type="module">
+// ---------- Splash ----------
+const splash = document.getElementById("splash");
+let splashDone = false;
+function hideSplash() {
+  if (splashDone) return;
+  splashDone = true;
+  splash.classList.add("splash--done");
+  setTimeout(() => splash.remove(), 500);
+}
+window.addEventListener("load", () => setTimeout(hideSplash, 550));
+setTimeout(hideSplash, 1600);
+
+// ---------- Helpers ----------
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function toast(msg) {
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("toast--show"));
+  setTimeout(() => {
+    el.classList.remove("toast--show");
+    setTimeout(() => el.remove(), 300);
+  }, 1800);
+}
+async function copyText(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast(label + " copied");
+  } catch {
+    toast("Could not copy");
+  }
+}
+const SVG = {
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>',
+  tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10 5.5 20.5a2.1 2.1 0 0 1-3-3L13 8"/><path d="m9 15 3-3"/><path d="M15 8h6a2 2 0 0 0 0-4H11a2 2 0 0 1 0-4h7"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="2" x="2" y="2"/><rect width="8" height="16" x="8" y="8" rx="2"/><path d="M2 21h20"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>'
+};
+
+const DEMO = {
+  productTitle: "The Everyday Carry Leather Handbag",
+  productDescription: "A polished, practical leather handbag designed for busy professionals who want one beautiful bag for workdays, errands, and evenings out.",
+  priceGuidance: "Position around ₦35,000–₦45,000, then adjust for leather quality, finishing, and delivery costs.",
+  sellingPoints: ["Professional everyday style", "Room for essentials", "Hand-finished local craftsmanship"],
+  whatsappMessage: "New in: your next everyday favourite. This hand-finished leather handbag is roomy, polished, and made for busy workdays. Send a message to reserve yours today. Delivery available in Lagos.",
+  socialCaption: "From the office to after-hours, carry your day beautifully. Meet the Everyday Carry Leather Handbag — crafted for women who do it all. #ShopLocal #MadeInNigeria",
+  customerFaq: [
+    { question: "How much is it?", answer: "It is positioned around ₦35,000–₦45,000 depending on the final finish and delivery." },
+    { question: "Where do you deliver?", answer: "Delivery is available in Lagos; message the seller to confirm your area and delivery fee." }
+  ],
+  localLanguageCopy: "Your new everyday bag don land. E fine, e strong, and e get space for your important things. Send a message to order.",
+  promoScript: "Your day moves fast. Your bag should keep up. Meet the Everyday Carry Leather Handbag — crafted locally, designed for every plan."
+};
+
+const KIT_SCHEMA = {
+  type: "object",
+  properties: {
+    productTitle: { type: "string" },
+    productDescription: { type: "string" },
+    priceGuidance: { type: "string" },
+    sellingPoints: { type: "array", items: { type: "string" } },
+    whatsappMessage: { type: "string" },
+    socialCaption: { type: "string" },
+    localLanguageCopy: { type: "string" },
+    promoScript: { type: "string" },
+    customerFaq: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { question: { type: "string" }, answer: { type: "string" } },
+        required: ["question", "answer"],
+        additionalProperties: false
+      }
+    }
+  },
+  required: ["productTitle", "productDescription", "priceGuidance", "sellingPoints", "whatsappMessage", "socialCaption", "localLanguageCopy", "promoScript", "customerFaq"],
+  additionalProperties: false
+};
+
+const $ = (id) => document.getElementById(id);
+const photoInput = $("photo");
+const dropzone = $("dropzone");
+const generateBtn = $("generate");
+const kitSection = $("sales-kit");
+const kitGrid = $("kit-grid");
+let productImage = null;
+
+const field = (id) => $(id).value.trim();
+const setField = (id, v) => { $(id).value = v; };
+
+function getLanguage() {
+  const checked = document.querySelector('input[name="language"]:checked');
+  return checked ? checked.value : "Simple English";
+}
+function setLanguage(v) {
+  const el = document.querySelector('input[name="language"][value="' + v + '"]');
+  if (el) el.checked = true;
+}
+
+function renderKit(kit, language) {
+  let grid = "";
+  grid += '<article class="kitcard"><div class="kitcard__head"><span class="kitcard__title"><span class="kitcard__icon">' + SVG.box + '</span> Product story</span></div><h3>' + escapeHtml(kit.productTitle) + '</h3><p class="lg">' + escapeHtml(kit.productDescription) + '</p><div class="tags">' + (kit.sellingPoints || []).map((p) => '<span class="tag">' + escapeHtml(p) + '</span>').join("") + '</div></article>';
+
+  grid += '<article class="kitcard"><div class="kitcard__head"><span class="kitcard__title"><span class="kitcard__icon">' + SVG.tag + '</span> Price guidance</span></div><p class="lg" style="color:var(--green);font-weight:900;font-size:1.25rem;line-height:1.5">' + escapeHtml(kit.priceGuidance) + '</p><div class="kitcard__warn">Use this as a starting point and confirm your actual costs, margin, stock, and delivery fee.</div></article>';
+
+  grid += copyCard(SVG.chat, "WhatsApp message", kit.whatsappMessage, "WhatsApp message");
+  grid += copyCard(SVG.tag, "Social caption", kit.socialCaption, "Social caption");
+  grid += copyCard(SVG.globe, "Local-language copy • " + language, kit.localLanguageCopy, "Local-language copy");
+  grid += copyCard(SVG.mic, "30-second promo script", kit.promoScript, "Promo script");
+
+  grid += '<article class="kitcard"><div class="kitcard__head"><span class="kitcard__title"><span class="kitcard__icon">' + SVG.chat + '</span> Customer FAQ</span></div><div class="faq">' + (kit.customerFaq || []).map((f) => '<div class="faq-item"><p class="q">' + escapeHtml(f.question) + '</p><p class="a">' + escapeHtml(f.answer) + '</p></div>').join("") + '</div></article>';
+
+  kitGrid.innerHTML = grid;
+  kitSection.hidden = false;
+  bindCopyButtons();
+  setTimeout(() => kitSection.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+}
+
+function copyCard(icon, title, text, label) {
+  const safe = escapeHtml(text);
+  return '<article class="kitcard"><div class="kitcard__head"><span class="kitcard__title"><span class="kitcard__icon">' + icon + '</span> ' + title + '</span><button class="copy-btn" type="button" data-copy="' + safe + '">' + SVG.copy + ' Copy</button></div><p class="sm">' + safe + '</p></article>';
+}
+
+function bindCopyButtons() {
+  kitGrid.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", () => copyText(btn.dataset.copy, "Sales copy"));
+  });
+}
+
+async function resizeImage(file) {
+  if (!file.type.startsWith("image/")) throw new Error("Please choose an image file.");
+  const url = URL.createObjectURL(file);
+  const img = await new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = () => rej(new Error("That image could not be loaded."));
+    i.src = url;
+  });
+  const max = 1200;
+  const w = Math.min(1, max / Math.max(img.width, img.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(img.width * w);
+  canvas.height = Math.round(img.height * w);
+  canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+  URL.revokeObjectURL(url);
+  return canvas.toDataURL("image/jpeg", 0.82);
+}
+
+function showPreview(dataUrl, name) {
+  dropzone.classList.add("dropzone--has-preview");
+  dropzone.classList.add("dropzone--drag");
+  dropzone.innerHTML = '<img src="' + dataUrl + '" alt="Product preview"><div class="dropzone__label">' + escapeHtml(name) + ' • change photo</div>';
+}
+
+function resetPhotoPlaceholder() {
+  dropzone.classList.remove("dropzone--has-preview");
+  dropzone.classList.remove("dropzone--drag");
+  dropzone.innerHTML = '<div class="dropzone__empty"><svg class="dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><p class="dropzone__title">Drop a photo here or click to browse</p><p class="dropzone__hint">JPG or PNG • resized securely in your browser</p></div>';
+}
+
+async function handleFile(file) {
+  if (!file) return;
+  try {
+    const dataUrl = await resizeImage(file);
+    productImage = dataUrl;
+    showPreview(dataUrl, file.name);
+    toast("Product photo ready");
+  } catch (err) {
+    toast(err instanceof Error ? err.message : "Could not use that image");
+  }
+}
+
+async function generateKit() {
+  const name = field("name");
+  if (!productImage && !name) {
+    toast("Add a product photo or product name first");
+    return;
+  }
+  generateBtn.disabled = true;
+  generateBtn.querySelector(".btn__label").innerHTML = '<span class="spinner"></span> AI dey analyze…';
+
+  const systemMsg = "You are MarketMate AI by SynTech, a friendly sales assistant for small, local businesses. Turn one product photo and seller context into a complete sales kit. Write warm, clear, market-ready copy in the seller's chosen local language style. Respond with JSON only, following the provided schema.";
+
+  const userParts = [
+    { type: "text", text: "Product name: " + (name || "(from photo)") + "\nSeller location: " + (field("location") || "N/A") + "\nTarget customer: " + (field("customer") || "general") + "\nCost or desired price: " + (field("cost") || "N/A") + "\nLocal-language copy: " + getLanguage() }
+  ];
+  if (productImage) userParts.push({ type: "image_url", image_url: { url: productImage } });
+
+  try {
+    const completion = await websim.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMsg },
+        { role: "user", content: userParts }
+      ],
+      schema: KIT_SCHEMA
+    });
+    const kit = JSON.parse(completion.content);
+    renderKit(kit, getLanguage());
+    toast("Your sales kit is ready");
+  } catch (err) {
+    toast(err instanceof Error ? err.message : "The AI could not generate a kit. Please try again.");
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.querySelector(".btn__label").innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10 5.5 20.5a2.1 2.1 0 0 1-3-3L13 8"/><path d="m9 15 3-3"/><path d="M15 8h6a2 2 0 0 0 0-4H11a2 2 0 0 1 0-4h7"/></svg> ✨ Generate my sales kit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  }
+}
+
+// ---------- AI Helper chat ----------
+const chatWrap = $("chat");
+const chatLogs = $("chat-logs");
+const chatForm = $("chat-form");
+const chatInput = $("chat-input");
+$("chat-toggle").addEventListener("click", () => {
+  chatWrap.classList.toggle("chat--open");
+  if (chatWrap.classList.contains("chat--open")) chatInput.focus();
+});
+
+const CHAT_SYSTEM =
+  "You are the MarketMate AI by SynTech helper, a friendly in-app guide for the MarketMate AI website. " +
+  "Be concise and helpful. You help visitors understand how the site works: it turns one product photo into a sales kit " +
+  "(product story, price guidance, WhatsApp message, social caption, local-language copy, promo script, and customer FAQ) for small, local businesses. " +
+  "Mention it is by SynTech and sponsored by the Bincom Hackathon when relevant. " +
+  "It works best from a mobile or desktop browser and is free to use - just upload a photo or type a product name on the create section. " +
+  "You can point people to the footer for Telegram, WhatsApp, Facebook and Gmail contact. Keep answers short.";
+
+let chatHistory = [];
+function addChatMsg(role, text) {
+  const div = document.createElement("div");
+  div.className = "chat__msg chat__msg--" + role;
+  div.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+  chatLogs.appendChild(div);
+  chatLogs.scrollTop = chatLogs.scrollHeight;
+  return div;
+}
+
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = chatInput.value.trim();
+  if (!text) return;
+  chatInput.value = "";
+  addChatMsg("user", text);
+  const typing = document.createElement("div");
+  typing.className = "chat__msg chat__msg--bot chat__msg--typing";
+  typing.innerHTML = "<span></span><span></span><span></span>";
+  chatLogs.appendChild(typing);
+  chatLogs.scrollTop = chatLogs.scrollHeight;
+
+  chatHistory.push({ role: "user", content: text });
+  chatHistory = chatHistory.slice(-10);
+  try {
+    const completion = await websim.chat.completions.create({
+      messages: [{ role: "system", content: CHAT_SYSTEM }].concat(chatHistory)
+    });
+    typing.remove();
+    chatHistory.push(completion);
+    addChatMsg("bot", completion.content);
+  } catch {
+    typing.remove();
+    addChatMsg("bot", "Sorry, I could not answer right now. Please try again.");
+  }
+});
+
+// greeting
+chatHistory.push({ role: "assistant", content: "Hi! I'm the MarketMate AI helper by SynTech. Ask me anything about how this site works or what it can do for your business." });
+addChatMsg("bot", "Hi! I'm the MarketMate AI helper by SynTech. Ask me anything about how this site works or what it can do for your business.");
+
+// ---------- Wire up events ----------
+["nav-demo", "hero-demo", "create-demo"].forEach((id) => {
+  $(id).addEventListener("click", () => {
+    setField("name", "Handmade leather handbag");
+    setField("location", "Lagos, Nigeria");
+    setField("customer", "Young working women");
+    setField("cost", "₦35,000");
+    setLanguage("Nigerian Pidgin");
+    renderKit(DEMO, "Nigerian Pidgin");
+    toast("Demo sales kit loaded");
+  });
+});
+
+$("restart").addEventListener("click", () => {
+  kitSection.hidden = true;
+  kitGrid.innerHTML = "";
+  Object.entries({ name: "", location: "", customer: "", cost: "" }).forEach(([k]) => setField(k, ""));
+  setLanguage("Simple English");
+  productImage = null;
+  photoInput.value = "";
+  resetPhotoPlaceholder();
+  document.getElementById("create").scrollIntoView({ behavior: "smooth" });
+});
+
+$("createForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  generateKit();
+});
+
+photoInput.addEventListener("change", (e) => handleFile(e.target.files && e.target.files[0]));
+
+// Tap a filled field -> clear to an empty gap for typing; restore if left blank
+document.querySelectorAll(".field__input[data-default]").forEach((input) => {
+  input.addEventListener("focus", () => {
+    if (input.value === input.dataset.default) input.value = "";
+  });
+  input.addEventListener("blur", () => {
+    if (input.value.trim() === "") input.value = input.dataset.default;
+  });
+});
+dropzone.addEventListener("click", () => photoInput.click());
+["dragenter", "dragover"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add("dropzone--drag"); }));
+["dragleave", "drop"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove("dropzone--drag"); }));
+dropzone.addEventListener("drop", (e) => handleFile(e.dataTransfer && e.dataTransfer.files[0]));
+
+// ---------- Contact links ----------
+// Make every contact pill reliably navigate, with a same-tab fallback if a
+// popup/new-tab is blocked by the environment.
+document.querySelectorAll(".contact-pill").forEach((el) => {
+  el.addEventListener("click", (e) => {
+    const url = el.getAttribute("href");
+    if (!url || !el.target || el.target !== "_blank") return;
+    const win = window.open(url, "_blank", "noopener");
+    if (!win) {
+      e.preventDefault();
+      window.location.href = url;
+    }
+  });
+});
+
+// Hide the floating chat button while the footer (contact links) is on screen,
+// so it never covers the pills and swallows their taps.
+const chatEl = $("chat");
+const footerEl = document.querySelector(".site-footer");
+if (chatEl && footerEl && "IntersectionObserver" in window) {
+  new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      chatEl.style.display = entry.isIntersecting ? "none" : "";
+    });
+  }).observe(footerEl);
+}
+
+// ---------- Download full project as a single index.html ----------
+$("download-code").addEventListener("click", async () => {
+  const btn = $("download-code");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = 'Building index.html…';
+  try {
+    const [css, js, page] = await Promise.all([
+      fetch("styles.css").then((r) => r.text()),
+      fetch("app.js").then((r) => r.text()),
+      fetch("index.html").then((r) => r.text())
+    ]);
+    let html = page
+      .replace('<link rel="stylesheet" href="/styles.css" />', "<style>\n" + css + "\n</style>")
+      .replace('<script type="module" src="/app.js"></script>', "<script type=\"module\">\n" + js + "\n</script>");
+    const blob = new Blob([html], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "index.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast("index.html downloaded");
+  } catch {
+    toast("Could not assemble the file — try again");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+});
+
+</script>
+  </body>
+</html>
